@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:heart_bpm/heart_bpm.dart';
 import 'package:myheartbeat_project/views/home_page.dart';
 
 class DashboardPage extends StatefulWidget {
@@ -16,6 +17,9 @@ class _DashboardPageState extends State<DashboardPage> {
     FirebaseAuth.instance.signOut();
     Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => const MyHomePage()));
   }
+
+  List<SensorValue> data = [];
+  int? bpmValue;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +51,56 @@ class _DashboardPageState extends State<DashboardPage> {
             icon: const Icon(Icons.account_circle, color: Colors.white, size: 40),
           ),
         ],
+      ),
+      body: Center(
+        child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  "Cubra a câmera e o flash com o seu dedo",
+                  style: TextStyle(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 22,),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        Icons.favorite,
+                        size: 88,
+                        color: Colors.red,
+                      ),
+                      HeartBPMDialog(
+                        context: context, 
+                        onRawData: (value) {
+                          setState(() {
+                            if (data.length == 100) {
+                              data.removeAt(0);
+                            }
+                            data.add(value);
+                          });
+                        },
+                        onBPM: (value) => setState(() {
+                          bpmValue = value;
+                        }),
+                        child: Text(
+                          bpmValue?.toString() ?? "-",
+                          style: const TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
+                  ),
+              ],
+        ),
       ),
     );
   }
