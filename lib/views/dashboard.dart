@@ -11,7 +11,6 @@ class DashboardPage extends StatefulWidget {
 }
 
 class _DashboardPageState extends State<DashboardPage> {
-  String? get _username => FirebaseAuth.instance.currentUser?.email;
 
   void _logout() {
     FirebaseAuth.instance.signOut();
